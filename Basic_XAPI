@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SpaceX Rocket Explorer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 60px auto;
+      padding: 0 20px;
+      background: #f5f5f5;
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    select, button {
+      padding: 10px 16px;
+      font-size: 15px;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+    button {
+      background: #005288;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+    #result {
+      margin-top: 30px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 20px;
+      display: none;
+    }
+    #result h2 {
+      margin-top: 0;
+    }
+    #result p {
+      margin: 8px 0;
+      font-size: 15px;
+    }
+    #result img {
+      width: 100%;
+      max-height: 250px;
+      object-fit: cover;
+      border-radius: 4px;
+      margin-top: 12px;
+    }
+    #error {
+      color: red;
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>SpaceX Rocket Explorer</h1>
+
+  <select id="rocketSelect">
+    <option value="">-- Select a Rocket --</option>
+  </select>
+
+  <button onclick="getRocket()">Get Info</button>
+
+  <div id="error"></div>
+
+  <div id="result">
+    <h2 id="name"></h2>
+    <p id="description"></p>
+    <p><strong>Height:</strong> <span id="height"></span> m</p>
+    <p><strong>Mass:</strong> <span id="mass"></span> kg</p>
+    <p><strong>Engines:</strong> <span id="engines"></span></p>
+    <p><strong>Cost per launch:</strong> <span id="cost"></span></p>
+    <p><strong>Success rate:</strong> <span id="success"></span>%</p>
+    <p><strong>First flight:</strong> <span id="flight"></span></p>
+    <img id="image" src="" alt="Rocket image">
+  </div>
+
+  <script>
+    // Step 1: When page loads, fetch all rockets and fill the dropdown
+    async function loadRockets() {
+      const response = await fetch("https://api.spacexdata.com/v4/rockets");
+      const rockets = await response.json();
+
+      const select = document.getElementById("rocketSelect");
+
+      rockets.forEach(function(rocket) {
+        const option = document.createElement("option");
+        option.value = rocket.id;        // store the id as the value
+        option.textContent = rocket.name; // show the name in dropdown
+        select.appendChild(option);
+      });
+    }
+
+    // Step 2: When user clicks the button, fetch that specific rocket's data
+    async function getRocket() {
+      const id = document.getElementById("rocketSelect").value;
+
+      // If nothing selected, show error
+      if (!id) {
+        document.getElementById("error").textContent = "Please select a rocket first.";
+        return;
+      }
+
+      document.getElementById("error").textContent = "";
+
+      // Fetch data for the selected rocket using its id
+      const response = await fetch("https://api.spacexdata.com/v4/rockets/" + id);
+      const data = await response.json();
+
+      // Put the data into the HTML elements
+      document.getElementById("name").textContent = data.name;
+      document.getElementById("description").textContent = data.description;
+      document.getElementById("height").textContent = data.height.meters;
+      document.getElementById("mass").textContent = data.mass.kg.toLocaleString();
+      document.getElementById("engines").textContent = data.engines.number + " x " + data.engines.type;
+      document.getElementById("cost").textContent = "$" + data.cost_per_launch.toLocaleString();
+      document.getElementById("success").textContent = data.success_rate_pct;
+      document.getElementById("flight").textContent = data.first_flight;
+
+      if (data.flickr_images.length > 0) {
+        document.getElementById("image").src = data.flickr_images[0];
+        document.getElementById("image").style.display = "block";
+      } else {
+        document.getElementById("image").style.display = "none";
+      }
+
+      // Show the result box
+      document.getElementById("result").style.display = "block";
+    }
+
+    // Run loadRockets as soon as the page opens
+    loadRockets();
+  </script>
+
+</body>
+</html>
