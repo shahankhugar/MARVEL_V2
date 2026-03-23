@@ -1,4 +1,4 @@
-# Task 21 — Watch & Reflect: Introduction to Machine Learning
+# Task 21 — Watch & Reflect: Intro to Machine Learning
 
 **Name:** Shashank Hugar
 **Program:** UVCE MARVEL AI/ML — Level 1
@@ -6,44 +6,43 @@
 
 ---
 
-## What is Machine Learning?
+## What I Understood from the Videos
 
-Machine Learning is a branch of Artificial Intelligence where a computer learns patterns from data instead of being explicitly programmed with rules. In traditional programming, a developer writes step-by-step instructions for every scenario. In machine learning, you feed the model data and let it figure out the rules itself.
+Before watching these I had a rough idea of what ML was — computers learning stuff. But after going through both videos it actually clicked properly.
 
-StatQuest's introduction breaks ML down into three fundamental types.
-
-**Supervised Learning** is the most common type. You provide the model with labeled data — inputs paired with correct outputs. The model learns the relationship between them and uses that knowledge to predict outputs for new, unseen inputs. A spam filter is a classic example — trained on thousands of emails labeled spam or not spam, it learns to classify new emails on its own.
-
-**Unsupervised Learning** works with unlabeled data. The model has no correct answers to learn from — instead it finds hidden patterns and natural groupings in the data by itself. Customer segmentation is a common application — grouping customers by purchasing behaviour without being told what groups should exist.
-
-**Reinforcement Learning** is learning through trial and error. The model takes actions, receives rewards for good decisions and penalties for bad ones, and gradually improves its strategy. This is how systems like AlphaGo mastered complex games at a superhuman level.
-
-The common thread across all three is the same — the model finds patterns in data that would take humans far too long to identify manually.
+The StatQuest video explained it in a way that made sense without going too deep into math. The basic idea is that instead of writing rules for every possible situation, you just give the computer a bunch of examples and it figures out the pattern on its own. That's it. That's machine learning.
 
 ---
 
-## How Data is Prepared for Machine Learning
+## The Three Types of ML
 
-Understanding what ML is only tells half the story. Before any model can learn, the data it learns from must be carefully prepared. AltexSoft's video on data preparation makes clear that this process — called data preprocessing — accounts for roughly 80% of a data scientist's actual work.
+**Supervised Learning** is where you give the model data that already has answers. Like if you want to build a spam filter, you show it thousands of emails that are already labeled spam or not spam. It learns from those and then can classify new emails it's never seen. Most real world ML is this type.
 
-Real-world data is almost never clean. It comes with missing values, duplicates, inconsistent formatting, irrelevant columns, and features on wildly different scales. A model trained on this raw data will produce unreliable results — this is the principle of garbage in, garbage out.
+**Unsupervised Learning** is different — there are no labels. You just throw data at the model and it finds groupings or patterns on its own. An example would be a company trying to group their customers by behaviour without knowing in advance what groups exist. The model figures that out itself.
 
-**Data Collection** is the first step — gathering data from databases, APIs, sensors, surveys, or web scraping depending on the problem.
-
-**Data Cleaning** involves handling missing values by either filling them with a sensible default (like the column mean) or removing incomplete rows entirely. Duplicates are removed and data types are corrected.
-
-**Feature Engineering** involves deciding which columns are actually useful for prediction and removing the rest. Sometimes new features are created by combining existing ones — for example, deriving age from a date of birth column.
-
-**Normalization and Standardization** bring all features to the same scale. Without this, a feature with values in the thousands dominates a feature with values between 0 and 1, and the model learns a distorted picture of the data. This was applied directly in Task 5 — the California Housing dataset features were standardized before training the gradient descent model for exactly this reason.
-
-**Train-Test Split** divides the prepared data into a training set and a test set — typically 80% and 20%. The model learns from the training set and is evaluated on the test set, which it has never seen. This measures how well the model generalizes to new data rather than just memorizing what it was trained on.
+**Reinforcement Learning** is the most interesting one to me. The model learns by doing — it tries something, gets a reward if it was good or a penalty if it was bad, and slowly gets better. This is how AlphaGo learned to beat humans at chess. No one programmed it with chess strategies — it just played millions of games and figured it out.
 
 ---
 
-## Reflection
+## What I Learned from the Data Preparation Video
 
-These two videos together form a complete picture of how machine learning actually works in practice. The first explains the concept — what a model is trying to do. The second explains the groundwork — what needs to happen before a model can do anything useful. Neither is complete without the other. A strong algorithm on poorly prepared data produces poor results. Well-prepared data fed into even a simple model can produce surprisingly good results. The foundation of good ML work is good data work.
+This one actually surprised me. I assumed the hard part of ML was building the model. Turns out preparing the data before training takes up most of the time — apparently around 80% of a data scientist's work.
+
+Raw data from the real world is messy. There are missing values, duplicate rows, wrong data types, and columns that are completely useless for what you're trying to predict. If you just throw this directly into a model the results will be garbage — literally called "garbage in, garbage out."
+
+So before training you have to:
+
+- **Clean the data** — fix or remove missing values, remove duplicates
+- **Pick the right features** — not every column helps. Some are irrelevant and just confuse the model
+- **Normalize or standardize** — this was something I actually did in Task 5. The California Housing dataset had features on completely different scales, so we had to normalize them before gradient descent would work properly
+- **Split into train and test sets** — usually 80/20. You train on one part and test on the other so you know if the model actually learned something or just memorized the training data
 
 ---
 
-*Written as part of UVCE MARVEL AI/ML Level 1 — Task 21*
+## My Reflection
+
+The two videos together made more sense than either one alone. The first tells you what ML is trying to do. The second tells you what you have to do before ML can even start. I think a lot of people skip to the algorithms and ignore the data prep part — but from what I've seen in Task 5, bad data preparation directly hurts your results. A simple model on clean well-prepared data can easily beat a complex model on messy data.
+
+---
+
+*UVCE MARVEL AI/ML Level 1 — Task 21*
