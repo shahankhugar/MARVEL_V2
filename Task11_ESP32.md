@@ -8,66 +8,47 @@
 
 ## What is the ESP32?
 
-The ESP32 is a microcontroller similar to the Arduino Uno but with one critical addition — built-in WiFi and Bluetooth. This means it can connect to a local network and communicate wirelessly, something the Arduino Uno cannot do without external modules.
+I've worked with Arduino before but the ESP32 is a step up. It's a microcontroller like Arduino but it has built-in WiFi and Bluetooth — which means it can connect to a network on its own without any extra modules. That one difference opens up a completely different category of projects.
 
-This makes the ESP32 ideal for IoT (Internet of Things) projects — devices that can be controlled or monitored over a network. In this task, the ESP32 acts as a standalone web server, hosting a webpage that controls a physical LED connected to one of its GPIO pins.
-
----
-
-## What is a Web Server?
-
-A web server is a program that listens for requests from a browser and sends back responses — usually HTML pages. Normally web servers run on large computers in data centres. The ESP32 is powerful enough to run a lightweight web server locally on the chip itself.
-
-When connected to the same WiFi network, any device — phone, laptop, tablet — can open the ESP32's IP address in a browser, see the control page, and send commands to toggle the LED.
+In this task I used that WiFi capability to turn the ESP32 into a web server — basically a tiny website hosted on the chip itself that lets you control an LED from your phone's browser.
 
 ---
 
-## How it Works
+## How the Web Server Works
 
-**Step 1 — ESP32 connects to WiFi**
+The idea is simple once you understand it. The ESP32 connects to your WiFi and gets an IP address — something like `192.168.1.105`. You open that IP in your browser, the ESP32 sends back an HTML page with ON and OFF buttons. You click a button, your browser sends a request to the ESP32, and the ESP32 turns the LED on or off.
 
-The code is given your WiFi network name (SSID) and password. On startup, the ESP32 connects to that network and is assigned a local IP address (like `192.168.1.105`).
+No cloud, no internet needed. Just the ESP32 and your phone on the same WiFi.
 
-**Step 2 — Web server starts**
-
-The ESP32 starts listening on port 80 — the standard HTTP port. Any browser request to that IP address is handled by the ESP32.
-
-**Step 3 — Browser loads the control page**
-
-When you open the IP address in your browser, the ESP32 sends back an HTML page with two buttons — LED ON and LED OFF.
-
-**Step 4 — Button press sends a request**
-
-Clicking ON sends a GET request to `/on`. Clicking OFF sends a request to `/off`. The ESP32 reads the URL path and acts accordingly.
-
-**Step 5 — GPIO pin is toggled**
-
-The LED is connected to a GPIO pin. When `/on` is received, the pin is set HIGH — current flows and the LED turns on. When `/off` is received, the pin is set LOW — LED turns off.
+Step by step:
+- ESP32 connects to WiFi using the SSID and password in the code
+- It starts a web server listening on port 80 (standard HTTP)
+- You open the IP in your browser — ESP32 sends back the control page
+- Click ON → browser hits `/on` → ESP32 sets GPIO pin HIGH → LED turns on
+- Click OFF → browser hits `/off` → ESP32 sets GPIO pin LOW → LED turns off
 
 ---
 
 ## GPIO Pins
 
-GPIO stands for General Purpose Input Output. These are the pins on the ESP32 that can be configured as either inputs (reading sensors, buttons) or outputs (controlling LEDs, motors). In this task, one GPIO pin was configured as an output to control the LED.
+GPIO stands for General Purpose Input Output. These are the pins you connect components to. Each pin can be set as either an input (reading a sensor or button) or an output (controlling an LED or motor). Here I configured one GPIO pin as output and connected the LED to it.
 
 ---
 
-## Configuring Arduino IDE for ESP32
+## Setting Up Arduino IDE for ESP32
 
-By default Arduino IDE only supports Arduino boards. To upload code to an ESP32 you need to add the ESP32 board package:
+This part took a bit of setup. By default Arduino IDE doesn't support ESP32 — you have to manually add the board package.
 
-Go to **File → Preferences** → paste the ESP32 board manager URL into "Additional Board Manager URLs":
+Go to **File → Preferences** → paste this URL in "Additional Board Manager URLs":
 ```
 https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
 ```
 
-Then go to **Tools → Board → Board Manager** → search ESP32 → install.
-
-After installation, select the correct ESP32 board from **Tools → Board**, set the correct COM port, and upload as normal.
+Then **Tools → Board → Board Manager** → search ESP32 → install. After that you can select the ESP32 board and upload like normal.
 
 ---
 
-## Code Overview
+## The Code
 
 ```cpp
 #include <WiFi.h>
@@ -104,22 +85,16 @@ void loop() {
 }
 ```
 
-The `WiFi.h` library handles network connection. `WebServer.h` handles incoming browser requests. `server.on()` maps URL paths to functions. `server.handleClient()` in the loop continuously listens for incoming requests.
+`WiFi.h` handles connecting to the network. `WebServer.h` handles the incoming requests. `server.on()` maps a URL path to a function — so when `/on` is hit it calls `handleOn()` which sets the pin HIGH. The `loop()` just keeps listening for new requests continuously.
 
 ---
 
-## Result
+## What Happened
 
-The ESP32 successfully connected to the WiFi network and hosted a web server. The LED connected to the GPIO pin was toggled on and off in real time by clicking buttons on the browser page — accessed from a phone on the same network. No physical button or switch was needed — the control was entirely wireless through the browser.
-
----
-
-## Key Takeaways
-
-The ESP32's built-in WiFi makes it a powerful tool for IoT applications — any physical component (LED, motor, relay) can be controlled wirelessly through a browser. GPIO pins are the bridge between software and hardware. Arduino IDE with the ESP32 board package provides a familiar environment to program the chip. This is the foundation for home automation, smart devices, and remote monitoring systems.
+Connected to WiFi, opened the IP on my phone browser, clicked ON — LED turned on. Clicked OFF — LED turned off. Worked cleanly with no lag. The whole thing felt like controlling real hardware from a webpage which is pretty cool when you see it working for the first time.
 
 ---
 
 ## Video Demo
 
-https://www.youtube.com/watch?v=z45kebAVEvY
+[![Watch](https://img.youtube.com/vi/z45kebAVEvY/0.jpg)](https://www.youtube.com/watch?v=z45kebAVEvY)
